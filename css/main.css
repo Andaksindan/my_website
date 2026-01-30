@@ -5,11 +5,33 @@
   box-sizing: border-box;
 }
 
+:root {
+  --bg-color: #fafafa;
+  --text-color: #111;
+  --card-bg: #fff;
+  --header-bg: rgba(255, 255, 255, 0.85);
+  --border-color: #ddd;
+  --accent-color: #ff3b3b;
+  --newsletter-bg: #000;
+  --newsletter-text: #fff;
+}
+
+body.dark-mode {
+  --bg-color: #0a0a0a;
+  --text-color: #f0f0f0;
+  --card-bg: #161616;
+  --header-bg: rgba(10, 10, 10, 0.85);
+  --border-color: #333;
+  --accent-color: #ff5252;
+  /* Slightly lighter for dark mode */
+}
+
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #fafafa;
-  color: #111;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 a {
@@ -26,8 +48,14 @@ a {
   justify-content: space-between;
   align-items: center;
   padding: 20px 40px;
-  border-bottom: 1px solid #ddd;
-  background: #fff;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--header-bg);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .logo a {
@@ -212,7 +240,7 @@ a {
 ========================= */
 
 .card {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 12px;
   overflow: hidden;
   display: flex;
@@ -261,7 +289,8 @@ a {
 }
 
 .card p {
-  color: #555;
+  color: var(--text-color);
+  opacity: 0.8;
   font-size: 0.95rem;
   line-height: 1.5;
   margin-bottom: 20px;
@@ -269,11 +298,148 @@ a {
 }
 
 .card a {
-  color: #ff3b3b;
+  color: var(--accent-color);
   font-weight: 600;
   text-transform: uppercase;
   font-size: 0.85rem;
   letter-spacing: 0.5px;
+}
+
+/* =========================
+   NEW FEATURES (Ticker, Filters, Newsletter)
+   ========================= */
+
+/* Ticker */
+.ticker-wrap {
+  width: 100%;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+  padding: 10px 0;
+  border-bottom: 1px solid #333;
+}
+
+.ticker {
+  display: flex;
+  white-space: nowrap;
+  animation: ticker 30s linear infinite;
+}
+
+.ticker-item {
+  padding: 0 40px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.ticker-wrap:hover .ticker {
+  animation-play-state: paused;
+}
+
+@keyframes ticker {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Category Filters */
+.filter-container {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  padding: 8px 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-color);
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  background: var(--accent-color);
+  color: #fff;
+  border-color: var(--accent-color);
+}
+
+/* Newsletter Section */
+.newsletter-section {
+  background: var(--newsletter-bg);
+  color: var(--newsletter-text);
+  padding: 80px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.newsletter-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #ff3b3b, #ff00cc, #3333ff);
+}
+
+.newsletter-content h2 {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  background: linear-gradient(to right, #fff, #aaa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.newsletter-content p {
+  color: #888;
+  max-width: 500px;
+  margin: 0 auto 40px;
+  font-size: 1.1rem;
+}
+
+.newsletter-form {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.newsletter-form input {
+  flex: 1;
+  padding: 14px 20px;
+  border-radius: 50px;
+  border: 0;
+  background: #222;
+  color: #fff;
+  outline: none;
+}
+
+.newsletter-form button {
+  padding: 14px 30px;
+  border-radius: 50px;
+  border: 0;
+  background: var(--accent-color);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.newsletter-form button:hover {
+  transform: scale(1.05);
 }
 
 /* Darker, premium gradients for placeholders */
@@ -456,7 +622,7 @@ a {
   padding: 30px 40px;
   border-top: 1px solid #ddd;
   margin-top: 40px;
-  background: #fff;
+  background: var(--card-bg);
 }
 
 .footer-links a {
