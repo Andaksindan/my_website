@@ -1,47 +1,70 @@
+/**
+ * Now & Noticed - Main JavaScript
+ * 
+ * Core functionality:
+ * 1. Component loading (header/footer)
+ * 2. Card filtering on home page
+ * 3. Lazy-loading images with blur effect
+ * 4. Reading progress bar
+ */
+
+// =========================
+// GLOBAL ELEMENTS & STATE
+// =========================
+let progressBar;
+
+// =========================
+// COMPONENT LOADER
+// =========================
 async function loadComponent(id, file) {
   try {
     const response = await fetch(`${file}?v=${new Date().getTime()}`);
     if (!response.ok) throw new Error(`Failed to load ${file}`);
     const html = await response.text();
-    document.getElementById(id).innerHTML = html;
+    const target = document.getElementById(id);
+    if (target) {
+      target.innerHTML = html;
+    }
   } catch (error) {
-    console.error(error);
+    console.error("Error loading component:", error);
   }
 }
 
-loadComponent("header", "/components/header.html");
+// =========================
+// PROGRESS BAR
+// =========================
+function updateProgressBar() {
+  if (!progressBar) {
+    progressBar = document.querySelector('.reading-progress');
+  }
+  if (!progressBar) return;
 
-/* Lazy-load blur images */
-document.addEventListener("DOMContentLoaded", () => {
-  // FILTERING LOGIC
+  const windowHeight = window.innerHeight;
+  const documentHeight = document.documentElement.scrollHeight - windowHeight;
+  const scrollTop = window.scrollY;
+  const scrollPercentage = (scrollTop / (documentHeight || 1)) * 100;
+
+  progressBar.style.width = Math.min(scrollPercentage, 100) + '%';
+  if (scrollTop > 100) progressBar.classList.add('visible');
+  else progressBar.classList.remove('visible');
+}
+
+// =========================
+// DOM CONTENT LOADED
+// =========================
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. Filtering logic for cards
   const filterBtns = document.querySelectorAll(".filter-btn");
   const cards = document.querySelectorAll(".card-grid .card");
-
   filterBtns.forEach(btn => {
     btn.addEventListener("click", () => {
-      // Remove active class from all
       filterBtns.forEach(b => b.classList.remove("active"));
-      // Add active class to clicked
       btn.classList.add("active");
-
       const filter = btn.getAttribute("data-filter");
-
       cards.forEach(card => {
-        // Assume category is in a hidden element or attribute. 
-        // Current HTML doesn't explicitly store category on the .card element itself, 
-        // but some have placeholder classes or links. 
-        // Let's improve robustness by checking the link href or a custom attribute if added.
-        // For existing structure: 
-        // - Featured card has /movies/article.html -> Movies
-        // - Cars placeholder -> Cars
-        // - Watch card -> Watches
-        // - Lifestyle placeholder -> Lifestyle
-        // - Anime card -> Anime
-
         let category = "other";
         const link = card.querySelector("a")?.getAttribute("href") || "";
         const imgDiv = card.querySelector(".card-image");
-
         if (link.includes("movies") || imgDiv?.classList.contains("placeholder-movies")) category = "Movies";
         else if (link.includes("watches") || imgDiv?.classList.contains("placeholder-watches")) category = "Watches";
         else if (link.includes("cars") || imgDiv?.classList.contains("placeholder-cars")) category = "Cars";
@@ -59,37 +82,30 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // DARK MODE LOGIC
-  const toggleBtn = document.getElementById("dark-mode-toggle");
-  // Check local storage
-  if (localStorage.getItem("theme") === "dark") {
-    document.body.classList.add("dark-mode");
-    if (toggleBtn) toggleBtn.textContent = "☀️";
+  // 2. Setup progress bar
+  if (!document.querySelector('.reading-progress')) {
+    progressBar = document.createElement('div');
+    progressBar.className = 'reading-progress';
+    document.body.prepend(progressBar);
   }
+  window.addEventListener('scroll', updateProgressBar);
+  window.addEventListener('resize', updateProgressBar);
+  updateProgressBar();
 
-  if (toggleBtn) {
-    toggleBtn.addEventListener("click", () => {
-      document.body.classList.toggle("dark-mode");
-      const isDark = document.body.classList.contains("dark-mode");
-      localStorage.setItem("theme", isDark ? "dark" : "light");
-      toggleBtn.textContent = isDark ? "☀️" : "🌙";
-    });
-  }
+  // 3. Load header
+  loadComponent("header", "/components/header.html");
 
+  // 4. Image lazy loading
   const images = document.querySelectorAll("img[data-src]");
-
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         const img = entry.target;
         img.src = img.dataset.src;
-        img.onload = () => {
-          img.parentElement.classList.add("loaded");
-        };
+        img.onload = () => img.parentElement.classList.add("loaded");
         observer.unobserve(img);
       }
     });
   });
-
   images.forEach(img => observer.observe(img));
 });

@@ -16,22 +16,12 @@
   --newsletter-text: #fff;
 }
 
-body.dark-mode {
-  --bg-color: #0a0a0a;
-  --text-color: #f0f0f0;
-  --card-bg: #161616;
-  --header-bg: rgba(10, 10, 10, 0.85);
-  --border-color: #333;
-  --accent-color: #ff5252;
-  /* Slightly lighter for dark mode */
-}
 
 body {
   margin: 0;
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg-color);
   color: var(--text-color);
-  transition: background 0.3s ease, color 0.3s ease;
 }
 
 a {
@@ -55,8 +45,28 @@ a {
   z-index: 1000;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  transition: background 0.3s ease, border-color 0.3s ease;
 }
+
+/* =========================
+   READING PROGRESS BAR
+========================= */
+
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-color), #ff00cc, #3333ff);
+  z-index: 9999;
+  transition: width 0.1s ease-out;
+  opacity: 0;
+}
+
+.reading-progress.visible {
+  opacity: 1;
+}
+
 
 .logo a {
   font-size: 22px;
@@ -98,6 +108,32 @@ a {
 .hero p {
   font-size: 18px;
   color: #444;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.hero-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.15;
+  filter: blur(4px);
+  transform: scale(1.1);
+}
+
+.hero h1 {
+  position: relative;
+  z-index: 2;
 }
 
 /* =========================
@@ -398,6 +434,7 @@ a {
   font-size: 3rem;
   margin-bottom: 16px;
   background: linear-gradient(to right, #fff, #aaa);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
