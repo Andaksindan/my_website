@@ -484,6 +484,10 @@ a {
   background: linear-gradient(135deg, #2b1055 0%, #7597de 100%);
 }
 
+.card-image.placeholder-games {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
 .card-image.placeholder-cars {
   background: linear-gradient(135deg, #1c1c1c 0%, #c94b4b 100%);
 }

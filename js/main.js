@@ -70,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (link.includes("cars") || imgDiv?.classList.contains("placeholder-cars")) category = "Cars";
         else if (link.includes("lifestyle") || imgDiv?.classList.contains("placeholder-lifestyle")) category = "Lifestyle";
         else if (link.includes("anime") || imgDiv?.classList.contains("placeholder-anime")) category = "Anime";
+        else if (link.includes("games") || imgDiv?.classList.contains("placeholder-games")) category = "Games";
 
         if (filter === "all" || filter === category) {
           card.style.display = "flex";
